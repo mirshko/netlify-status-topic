@@ -1,7 +1,7 @@
 {
-  "name": "netlify-status-slack-topic",
+  "name": "netlify-slack-topic",
   "version": "1.0.0",
-  "description": "Set Slack topic with emojis based on Netlify build statuses",
+  "description": "Set a Slack channel's topic with emojis based on your Netlify sites deploy statuses",
   "main": "index.js",
   "author": "Jeff Reiner <theundeadghost@gmail.com>",
   "license": "MIT",
