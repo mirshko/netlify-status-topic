@@ -1,48 +1,65 @@
 require('dotenv').config()
 const fetch = require('node-fetch')
 
-const CHANNEL_ID = process.env.CHANNEL_ID
-const SLACK_TOKEN = process.env.SLACK_TOKEN
+// Your Creds
 const NETLIFY_TOKEN = process.env.NETLIFY_TOKEN
+const SLACK_TOKEN = process.env.SLACK_TOKEN
 
-const SLACK_BASE_URL = 'https://slack.com/api/channels.setTopic'
-const NETLIFY_BASE_URL = 'https://api.netlify.com/api/v1'
+// Slack Channel To Update
+const CHANNEL_ID = process.env.CHANNEL_ID
 
-const netlifyApi = (endpoint) => `${NETLIFY_BASE_URL}/${endpoint}?access_token=${NETLIFY_TOKEN}`
+// Parse Netlify Site IDs Into An Array
+const SITES = process.env.NETLIFY_SITES
+const sitesArray = SITES.split(',')
 
-const SITES = 'a183788d-445a-489e-afc2-0ba97fba1fd9,0aa8341b-e1c8-40ae-97d5-e46a8d920eb1,5f587095-7f5c-4651-bf7b-fb8851293403,2b4a868c-da54-45e8-be82-84b64f60b287'
+// Pass / Fail Emojis
+const ready = ':white_check_mark:'
+const failed = ':red_circle:'
 
-const payload = {
-  token: SLACK_TOKEN,
-  channel: CHANNEL_ID,
-  topic: 'Set From API'
+// Get the passed Netlify site's latest deploy status
+const getStatus = async (site) => {
+  const response = await fetch(`https://api.netlify.com/api/v1/sites/${site}/deploys?access_token=${NETLIFY_TOKEN}`)
+  const body = await response.json()
+
+  return `${body[0].url.split('https://')[1]} ${body[0].state == 'ready' ? ready : failed}`
 }
 
-// console.log(payload)
+// Get the current topic from your Slack channel
+const getCurrentTopic = async () => {
+  const response = await fetch(`https://slack.com/api/channels.info?token=${SLACK_TOKEN}&channel=${CHANNEL_ID}`)
+  const body = await response.json()
 
-// fetch(netlifyApi('sites'))
-//   .then(res => res.json())
-//   .then(body => body.forEach(site => {
-//   	console.log(site.name)
-
-//   	fetch(netlifyApi(`sites/${site.id}/deploys`))
-//   	  .then(res => res.json())
-//   	  .then(body => console.log(body[0].state))
-//   }));
-
-
-function getStatus (site) {
-	fetch(netlifyApi(`sites/${site}/deploys`))
-	  	.then(res => res.json())
-	  	.then(body => {
-	  		return `${body[0].name.split('ctf-marketing-website-')[1]} ${body[0].state == 'ready' ? ':white_check_mark:' : ':red_circle:'}, `
-	  	})
+  return body.channel.topic.value
 }
 
+// Build up the new topic from the array of Netlify sites
+// and their returned statuses
+const buildNewTopic = Promise.all(sitesArray.map(site => getStatus(site)))
+  .then(arrayOfStatuses => arrayOfStatuses.join(', '))
 
-SITES.split(',').forEach(site => {
-	console.log(getStatus(site))
-})
+// Check to see if the new topic differs from the old one
+// if it does then send the new topic to your slack Channel
+const postTopic = async () => {
+  const currentTopic = await getCurrentTopic()
+  const newTopic = await buildNewTopic
 
+  if(newTopic != currentTopic)
+    fetch(`https://slack.com/api/channels.setTopic`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SLACK_TOKEN}`,
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify({
+        "channel": CHANNEL_ID,
+        "topic": newTopic
+      })
+    })
+      .then(res => res.json())
+      .then(json => console.log(json));
 
+  return
+}
 
+// Execute the function
+postTopic()
