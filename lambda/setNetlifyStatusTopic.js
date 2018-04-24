@@ -71,6 +71,3 @@ exports.handler = function (event, context, callback) {
   // Execute the function
   postTopic()
 };
-
-
-
