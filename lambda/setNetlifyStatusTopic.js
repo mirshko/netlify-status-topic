@@ -1,5 +1,5 @@
 require('dotenv').config()
-const fetch = require('node-fetch')
+import fetch from 'node-fetch';
 
 exports.handler = function (event, context, callback) {
   // Your Creds
