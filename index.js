@@ -13,8 +13,8 @@ const SITES = process.env.NETLIFY_SITES
 const sitesArray = SITES.split(',')
 
 // Pass / Fail Emojis
-const ready = ':white_check_mark:'
-const failed = ':red_circle:'
+const ready = process.env.EMOJI_READY || ':white_check_mark:'
+const failed = process.env.EMOJI_FAILED || ':red_circle:'
 
 // Get the passed Netlify site's latest deploy status
 const getStatus = async (site) => {
