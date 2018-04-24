@@ -1,4 +1,4 @@
-# netlify-slack-topic
+# netlify-status-topic
 Set a Slack channel's topic with emojis based on your Netlify sites deploy statuses
 
 ## Setup
