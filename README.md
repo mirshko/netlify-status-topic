@@ -1,6 +1,8 @@
 # netlify-status-topic
 Set a Slack channel's topic with emojis based on your Netlify sites deploy statuses
 
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+
 ## Setup
 
 To set this up you'll need:

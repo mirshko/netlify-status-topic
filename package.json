@@ -6,7 +6,8 @@
   "author": "Jeff Reiner <theundeadghost@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "netlify-lambda serve lambda"
+    "start": "netlify-lambda serve lambda",
+    "prettier": "prettier --write lambda/setNetlifyStatusTopic.js"
   },
   "dependencies": {
     "dotenv": "^5.0.1",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "babel-preset-es2017": "^6.24.1",
-    "netlify-lambda": "^0.4.0"
+    "netlify-lambda": "^0.4.0",
+    "prettier": "1.12.1"
   }
 }
