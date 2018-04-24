@@ -5,8 +5,14 @@
   "main": "index.js",
   "author": "Jeff Reiner <theundeadghost@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "netlify-lambda serve ."
+  },
   "dependencies": {
     "dotenv": "^5.0.1",
     "node-fetch": "^2.1.2"
+  },
+  "devDependencies": {
+    "netlify-lambda": "^0.4.0"
   }
 }
