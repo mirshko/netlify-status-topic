@@ -6,7 +6,7 @@
   "author": "Jeff Reiner <theundeadghost@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "netlify-lambda serve ."
+    "start": "netlify-lambda serve lambda"
   },
   "dependencies": {
     "dotenv": "^5.0.1",
